@@ -3,6 +3,7 @@ module.exports = function () {
     var me = this; // as it is a constructor >this< is the new object. let have its refernce scoped in me to access it after construction is finished
 
     me.tasks = [];
+    me.closed = false
 
     me.then = function (property, next) {
         if (!next) {
@@ -35,7 +36,8 @@ module.exports = function () {
             task(function (result) {
                 task.result = result;
 
-                if (me.tasks.every(isFinished)) {
+                if (!me.closed && me.tasks.every(isFinished)) {
+                    me.closed = true
                     var results = me.tasks.map(asObject);
                     onFinish(results);
                 };

@@ -13,7 +13,10 @@ var database = url.split("/")[3]
 module.exports = {
     removeExisting: function (ids, callback) {
         MongoClient.connect(url, function (err, db) {
-            if (err) throw err;
+            if (err) {
+                callback([])
+                return
+            }
             var dbo = db.db(database);
             dbo.collection("decks").find({
                 "id": { $in: ids }
@@ -32,11 +35,13 @@ module.exports = {
     },
     insert: function (myobj, callback) {
         MongoClient.connect(url, function (err, db) {
-            if (err) throw err;
+            if (err) {
+                callback()
+                return
+            }
             var dbo = db.db(database);
             myobj.date = new Date();
             dbo.collection("decks").insertOne(myobj, function (err, res) {
-                if (err) throw err;
                 db.close();
                 callback()
             });
